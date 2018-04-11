@@ -1,0 +1,3 @@
+C:/Users/aviha/CLionProjects/cpp_ex1/cmake-build-debug/CMakeFiles/cpp_ex1.dir
+C:/Users/aviha/CLionProjects/cpp_ex1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/aviha/CLionProjects/cpp_ex1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
