@@ -11,7 +11,7 @@
 #include "File.h"
 
 //ctor
-File::File(string name,Folder* parent):name(name),value(new File_RC(name)),parent(parent){}
+File::File(string name,Folder* parent):name(name),parent(parent),value(new File_RC(name)){}
 //copy c`tor
 File::File(const File& rhs):value(rhs.value){
 
@@ -116,7 +116,7 @@ void File::wc(){
         cerr << e.what() << endl;
     }
     getline(in,buffer, static_cast<char>EOF);
-    for(int i = 0;i<buffer.length();i++,sumOfChars++){
+    for(unsigned int i = 0;i<buffer.length();i++,sumOfChars++){
         if(buffer[i] == ' ' || buffer[i] == '\t')sumOfWords++;
         if(buffer[i] == '\n'){
             sumOfRows++;
@@ -131,6 +131,7 @@ void File::wc(){
 //make the hard link and affect on the ref count
 File& File::ln(File* src){
     operator=(*src);
+    return *this;
 }
 //private method support at lproot command
 void File::printCurrentDetails(){

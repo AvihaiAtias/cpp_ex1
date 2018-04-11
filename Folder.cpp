@@ -62,7 +62,7 @@ void Folder::printCurrentDetails()const{//ordering the all path of the folder
 
     while(first != last)
         temp.push_back(*first++);
-    for(int i = 0;i < temp.size();i++){
+    for(unsigned int i = 0;i < temp.size();i++){
         cout << temp[i];
         if(i+1 < temp.size()) cout << '/';
     }

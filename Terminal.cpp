@@ -50,7 +50,7 @@ void Terminal::start(){
 }
 //method repeated print the currend path enviroment in the start of the line;
 void Terminal::printThePath()const{
-    for(int i = 0;i < currentPath.size();i++){
+    for(unsigned int i = 0;i < currentPath.size();i++){
         cout<<currentPath[i];
         if(i+1 < currentPath.size()) cout<<'/';
     }
@@ -63,7 +63,7 @@ void Terminal::getCommand(vector<string>& commandParts){
     string buff("");
     getline(cin,commandLine);
     if(commandLine == "\n" || commandLine == "")throw noCommandActivated();
-    for(int i = 0;i<commandLine.length();i++){
+    for(unsigned int i = 0;i<commandLine.length();i++){
         n = commandLine[i];
         if(n!=' ') buff+=n;
         else if((n == ' ' || n == '\t'|| n == '\n') && buff != ""){commandParts.push_back(buff);buff = "";}
@@ -405,7 +405,7 @@ void Terminal::tChdir(string source){
                 currentPath.pop_back();
                 if(folder != NULL) currentFolder = folder;
                 if(splitPath.size() > 1){
-                    for(int i = 1;i<splitPath.size();i++) currentPath.push_back(splitPath[i]);
+                    for(unsigned int i = 1;i<splitPath.size();i++) currentPath.push_back(splitPath[i]);
                 }
             }else{
                 currentPath.push_back(splitPath[splitPath.size()-1]);
@@ -421,7 +421,7 @@ void Terminal::tChdir(string source){
 void Terminal::splitThePath(vector<string>& splitPath,const string& source) {
     string buff = "";
     char n;
-    for(int i=0;i<source.length();i++){
+    for(unsigned int i=0;i<source.length();i++){
         if((n = source[i]) != '/') buff += n;
         else if((n == '/' || n == '\n') && buff != ""){splitPath.push_back(buff);buff = "";}
     }
@@ -474,7 +474,7 @@ void Terminal::tLproot(){
 //just printing the current location
 void Terminal::tPwd(){
     string home("~/HOME");
-    for(int i = 0;i<currentPath.size();i++){
+    for(unsigned int i = 0;i<currentPath.size();i++){
         home += "/";
         home += currentPath[i];
     }
@@ -503,7 +503,7 @@ Folder* Terminal::getLocation(vector<string>& location){
     }
     else if(location[0] == ".") p2position = currentFolder; //same like before but if the the path is more than one length;(like ./folder/file)
     else if(location[0] == "..") p2position = currentFolder->getParent();
-        for(int i = 1;i < location.size();i++){ //running threw the current path and make sure that all correct, throw exception if not
+        for(unsigned int i = 1;i < location.size();i++){ //running threw the current path and make sure that all correct, throw exception if not
             if(p2position->findFolder(location[i]) != NULL)
                 p2position = p2position->findFolder(location[i]);
             else if(i == location.size()- 1) return p2position;

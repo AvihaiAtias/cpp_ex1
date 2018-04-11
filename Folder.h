@@ -17,7 +17,7 @@ using namespace std;
 class Folder {
 
 public:
-    Folder(string name,Folder* parent):name(name),files(),folders(),parent(parent),
+    Folder(string name,Folder* parent):name(name),parent(parent),files(),folders(),
         lastTime(chrono::system_clock::to_time_t (chrono::system_clock::now())){}
     virtual ~Folder();
     void mkdir(string folderName);
@@ -35,11 +35,11 @@ public:
     Folder* getParent(){return parent;}
     void removeFolder(string folderName);
 private:
-    time_t lastTime;
     string name;
+    Folder* parent;
     list <File*> files;//list of the included files;
     list <Folder*> folders;//list of the included folders;
-    Folder* parent;
+    time_t lastTime;
 
     list<Folder*>::iterator findFolderMatch(string folderName);
     list<File*>::iterator findFileMatch(string fileName);

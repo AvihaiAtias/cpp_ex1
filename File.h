@@ -50,8 +50,9 @@ private:
         time_t lastTime;
     };
     string name;
-    File_RC *value;
     Folder* parent;//reference to the folder that include this file;
+    File_RC *value;
+
 };
 
 #endif /* FILE_H_ */
