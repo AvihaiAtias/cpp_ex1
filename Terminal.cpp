@@ -223,7 +223,9 @@ void Terminal::tCopy(string source,string target){
     splitThePath(splitTarget,target);//breaking the target
     try{
         sourceFolder = getLocation(splitSource);//get the exact location of the source
-        targetFolder = getLocation(splitTarget);//get the exact location of the target
+        //get the exact location of the target
+        if((targetFolder = getLocation(splitTarget)) == 0) targetFolder = currentFolder;
+        if(sourceFolder == 0) sourceFolder = currentFolder;
         if(sourceFolder->findFile(splitSource[splitSource.size()-1]) == NULL) //if file source wasn`t find throw exception
             throw fileNotFoundException("NO such file or directory ");
     }catch(folderNotFoundException e){ //getLocation method throw exception if folder not found
@@ -296,7 +298,8 @@ void Terminal::tCat(string source){
     Folder *parentFolder = getLocation(splitSource);
     File* sourceFile;
     try{
-        if((sourceFile = parentFolder->findFile(splitSource[splitSource.size()-1])) == NULL)
+        if(parentFolder == NULL) parentFolder = currentFolder;
+        if((sourceFile = parentFolder->findFile(splitSource[splitSource.size()-1]))  == NULL)
              throw fileNotFoundException("NO such file or directory ");
     }catch (fileNotFoundException e){
         cerr << e.what() << splitSource[splitSource.size()-1] << endl;
@@ -338,6 +341,7 @@ void Terminal::tLn(string source,string target){
     try{
         sourceFolder = getLocation(splitSource);
         targetFolder = getLocation(splitTarget);
+        if(targetFolder == 0) targetFolder = currentFolder;
         if((src = sourceFolder->findFile(splitSource[splitSource.size()-1])) == NULL)
             throw fileNotFoundException("NO such file or directory ");
     }catch(fileNotFoundException e){
@@ -348,7 +352,7 @@ void Terminal::tLn(string source,string target){
         return;
     }
     if((tgt = targetFolder->findFile(splitTarget[splitTarget.size()-1])) == NULL)
-        targetFolder->makeFile(splitTarget[splitTarget.size()-1]);
+        tgt = targetFolder->makeFile(splitTarget[splitTarget.size()-1]);
     tgt->ln(src);
 }
 //activate the mkdir method and create new folder in the match place

@@ -11,7 +11,7 @@
 #include "File.h"
 
 //ctor
-File::File(string name,Folder* parent):value(new File_RC(name)),parent(parent){}
+File::File(string name,Folder* parent):name(name),value(new File_RC(name)),parent(parent){}
 //copy c`tor
 File::File(const File& rhs):value(rhs.value){
 
@@ -22,8 +22,8 @@ File& File::operator=(const File& rhs){
     //TODO ask and fix the duplicate names in LN command;
     if(value == rhs.value) return *this;
     if(--value->refCount == 0) delete value;
-
     value = rhs.value;
+
     ++value->refCount;
 
     return *this;
@@ -32,8 +32,6 @@ File& File::operator=(const File& rhs){
 char File::operator[](int index)const throw (BoundException){
 
     char c;
-    int length = getSizeOfFile();
-
     if(index < 0) throw BoundException();
     value->inFile->seekg(index, ios_base::beg);
     value->inFile->get(c);
@@ -43,38 +41,29 @@ char File::operator[](int index)const throw (BoundException){
 }
 //operator[] for the write command
 char File::operator[](pair<int,char> item) throw (BoundException){
-    int length = getSizeOfFile();
     try{
         if(item.first < 0) throw BoundException("Error:illegal index");
     }catch (BoundException e){
         cerr << e.what() <<endl;
     }
     value->outFile->seekp(item.first, ios_base::beg);
-    value->outFile->put(item.second);
+
+
+    *(value->outFile) << item.second;
+    value->outFile->flush();
     return item.second;
-}
-//method return the size of file;
-int File::getSizeOfFile()const{
-
-    value->inFile->seekg(0,ios_base::end);
-    int length = value->inFile->tellg();
-    value->inFile->seekg(0,ios_base::beg);
-    return length;
-
 }
 //explained in the terminal
 void File::touch()const{
-    value->outFile->open(value->name);
     value->outFile->flush();
-    value->outFile->close();
     value->lastTime = chrono::system_clock::to_time_t ( chrono::system_clock::now() );
 }
 //actualy make the copy between 2 files
 void File::copy(File* tgt){
     string buffer;
     ifstream& in = *value->inFile;
-    ofstream& out = *tgt->value->outFile;
-    std::cout << __FILE__;
+    ofstream& out = *(tgt->value->outFile);
+
     in.seekg(0,ios_base::end);
     long length = in.tellg();
     try {
@@ -148,11 +137,12 @@ void File::printCurrentDetails(){
     cout<< getName() << " " << getRefCount()<< endl;
 }
 //File_RC private struct in File object d`tor
-File::File_RC::File_RC(string name):refCount(1),name(name),inFile(new ifstream),
+File::File_RC::File_RC(string name):refCount(1),inFile(new ifstream),
 outFile(new ofstream),lastTime(chrono::system_clock::to_time_t (chrono::system_clock::now())) {
     try{
         outFile->open(name.c_str());
         inFile->open(name.c_str());
+
         if(!inFile->is_open() || !outFile->is_open())
             throw FailToOpenFile("Error cannot open the file");
     }catch ( FailToOpenFile e){

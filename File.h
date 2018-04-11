@@ -34,24 +34,22 @@ public:
     void copy(File *tgt);
     void printCurrentDetails();
     File& ln(File* src);
-    string getName(){return value->name;}
+    string getName(){return name;}
     ifstream& getInFile(){return *value->inFile;}
     ofstream& getInOutFile(){return *value->outFile;}
     virtual ~File(){if(--value->refCount == 0) delete value;}
-    int getSizeOfFile()const;
     time_t getLastTime(){return value->lastTime;}
-    void setRefCount(int number){value->refCount = number;}
     int getRefCount(){return value->refCount;}
 private:
     struct File_RC{
          File_RC(string name);
         ~File_RC();
         int refCount;
-        string name;
         ifstream* inFile;
         ofstream* outFile;
         time_t lastTime;
     };
+    string name;
     File_RC *value;
     Folder* parent;//reference to the folder that include this file;
 };
