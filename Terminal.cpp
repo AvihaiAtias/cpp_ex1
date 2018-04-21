@@ -309,6 +309,7 @@ void Terminal::tCat(string source){
         return;
     }
     sourceFile->cat();
+    cout<<endl;
 }
 //activate the wc method of file object that count the rows words and chars
 void Terminal::tWc(string source){

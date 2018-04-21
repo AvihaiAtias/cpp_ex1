@@ -19,7 +19,6 @@ File::File(const File& rhs):value(rhs.value){
 }
 //operator= of file actualy relevant for the ln command for the ref count
 File& File::operator=(const File& rhs){
-    //TODO ask and fix the duplicate names in LN command;
     if(value == rhs.value) return *this;
     if(--value->refCount == 0) delete value;
     value = rhs.value;
@@ -36,9 +35,9 @@ char File::operator[](int index)const throw (BoundException){
     value->inFile->seekg(index, ios_base::beg);
     value->inFile->get(c);
     cout << c << endl;
-    value->inFile->close();
     return c;
 }
+
 //operator[] for the write command
 char File::operator[](pair<int,char> item) throw (BoundException){
     try{
@@ -51,11 +50,15 @@ char File::operator[](pair<int,char> item) throw (BoundException){
 
     *(value->outFile) << item.second;
     value->outFile->flush();
+    upDateTime();
     return item.second;
 }
 //explained in the terminal
-void File::touch()const{
+void File::touch(){
     value->outFile->flush();
+    upDateTime();
+}
+void File::upDateTime(){
     value->lastTime = chrono::system_clock::to_time_t ( chrono::system_clock::now() );
 }
 //actualy make the copy between 2 files
@@ -70,9 +73,10 @@ void File::copy(File* tgt){
         if(!in.is_open() || !out.is_open())throw FailToOpenFile("cannot open the file");
             in.seekg(0,ios_base::beg);
             out.seekp(0,ios_base::beg);
-            out.put('a');
             getline(in,buffer, static_cast<char>EOF);
             out.write(buffer.c_str(),length);
+            out.flush();
+            upDateTime();
     }catch (FailToOpenFile e){
         cerr << e.what() << endl;
     }
@@ -81,7 +85,7 @@ void File::copy(File* tgt){
 void File::remove() {
     delete this;
 }
-//same as copt but with delete
+//same as copy but with delete
 void File::move(File* tgt){
     copy(tgt);
     delete this;
